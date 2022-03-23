@@ -9,11 +9,15 @@ import java.util.List;
 
 @Repository
 public interface NodeRepository extends JpaRepository<NodeEntity, Long> {
-    @Query(value = "SELECT * FROM nodes " +
-            "WHERE earth_distance(" +
-            "ll_to_earth(?1, ?2), " +
-            "ll_to_earth(nodes.latitude, nodes.longitude)" +
-            ") < ?3",
-            nativeQuery = true)
+    @Query(value = "SELECT * FROM nodes" +
+            "WHERE" +
+            "      earth_distance( ll_to_earth(0, 90), ll_to_earth(nodes.latitude, nodes.longitude)) BETWEEN\n" +
+            "          earth_distance( ll_to_earth(0, 90), ll_to_earth(?1, ?2)) - ?3\n" +
+            "          AND earth_distance( ll_to_earth(0, 90), ll_to_earth(?1, ?2)) + ?3\n" +
+            "      AND earth_distance( ll_to_earth(90, 0), ll_to_earth(nodes.latitude, nodes.longitude)) BETWEEN\n" +
+            "        earth_distance( ll_to_earth(90, 0), ll_to_earth(?1, ?2)) - ?3\n" +
+            "    AND earth_distance( ll_to_earth(90, 0), ll_to_earth(?1, ?2)) + ?3\n" +
+            "    AND earth_distance( ll_to_earth(?1, ?2), ll_to_earth(nodes.latitude, nodes.longitude)) < ?3",
+    nativeQuery = true)
     List<NodeEntity> getNearNodes(double latitude, double longtitude, double radius);
 }

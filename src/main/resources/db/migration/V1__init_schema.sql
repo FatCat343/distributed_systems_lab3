@@ -14,3 +14,9 @@ CREATE TABLE tags(
                      value VARCHAR(256) NOT NULL,
                      PRIMARY KEY (node_id, key)
 );
+
+create extension earthdistance cascade;
+
+CREATE INDEX ON nodes(earth_distance( ll_to_earth(0, 90), ll_to_earth(nodes.latitude, nodes.longitude)));
+
+CREATE INDEX ON nodes(earth_distance( ll_to_earth(90, 0), ll_to_earth(nodes.latitude, nodes.longitude)));

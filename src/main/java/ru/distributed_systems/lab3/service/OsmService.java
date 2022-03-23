@@ -49,7 +49,7 @@ public class OsmService {
                     System.out.println("-----------------------------------");
                 }
                 NodeEntity entity = Converter.convertNodeToNodeEntity(node);
-                nodeService.saveNodeEntity(entity);
+                nodeService.saveNodeEntityBatched(entity);
                 count++;
                 if (count == 50_000)
                     break;
